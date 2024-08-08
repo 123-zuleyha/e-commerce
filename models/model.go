@@ -41,7 +41,6 @@ func CreateProduct(product *Product) error {
 	return config.DB.Create(product).Error
 }
 
-//UpdateProduct mevcut ürünü günceller
 
 func UpdateProduct(id string, product *Product) error {
 	return config.DB.Model(&Product{}).Where("id = ?", id).Updates(product).Error
