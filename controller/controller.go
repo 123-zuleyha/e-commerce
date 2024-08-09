@@ -46,12 +46,31 @@ func CreateProduct(c *fiber.Ctx) error {
 			"error": err.Error(),
 		})
 	}
-	if product.Name =="" || product.Description == "" { //Eğer name ve description boşsa
+	if product.Name ==""  { 
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status" : "error",
-			"message" : "name or description is empty" ,
+			"message" : "name  is empty" ,
 		})
-		config.DB.Create(&product) //veritananına ekleme yapıyoruz
+		if product.Description ==""  { 
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"status" : "error",
+				"message" : "description is empty" ,
+			})
+		}
+
+			if product.Price ==0  { 
+				return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+					"status" : "error",
+					"message" : "price is empty or zero" ,
+				})}
+				if product.Stock ==0  { 
+					return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+						"status" : "error",
+						"message" : "stock is empty or zero" ,
+					})}
+	
+
+           config.DB.Create(&product) //veritananına ekleme yapıyoruz
 		return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 			"status" :"success" , 
 			"data" : product ,
