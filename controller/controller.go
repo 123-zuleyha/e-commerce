@@ -11,34 +11,32 @@ func GetProducts(c *fiber.Ctx) error {
 	var products []models.Product
 	config.DB.Find(&products)
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"status"  : "succes",
-		"data" : products ,
+		"status": "succes",
+		"data":   products,
 	})
 }
 
 // GetProduct belirli bir id'ye sahip ürünü listeleyen fonksiyon GET
 // Param: id
 func GetProductByID(c *fiber.Ctx) error {
-	productID:= c.Params("product_id")
+	productID := c.Params("product_id")
 	var product models.Product
-     config.DB.Find(&product , productID)
+	config.DB.Find(&product, productID)
 
-	 if product.ID == 0 {
+	if product.ID == 0 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"status" : "error" , 
-			"message" : "product not found" ,
+			"status":  "error",
+			"message": "product not found",
 		})
 
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{
-			"status" :"succes" , 
-			"data" : product ,
+			"status": "succes",
+			"data":   product,
 		})
 
-	 }
-	
+	}}
 
-	
-}
+
 
 // CreateProduct yeni ürün oluşturmak için POST isteği oluşturur
 func CreateProduct(c *fiber.Ctx) error {
@@ -48,14 +46,22 @@ func CreateProduct(c *fiber.Ctx) error {
 			"error": err.Error(),
 		})
 	}
-
-	if err := models.CreateProduct(&product); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": err.Error(),
+	if product.Name =="" || product.Description == "" { //Eğer name ve description boşsa
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status" : "error",
+			"message" : "name or description is empty" ,
 		})
+		config.DB.Create(&product) //veritananına ekleme yapıyoruz
+		return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+			"status" :"success" , 
+			"data" : product ,
+		})
+
 	}
 
-	return c.Status(fiber.StatusCreated).JSON(product)
+	
+
+	
 }
 
 // UpdateProduct mevcut ürünü güncellemek için kullanılır. PUT isteklerini işler.
