@@ -18,17 +18,26 @@ func GetProducts(c *fiber.Ctx) error {
 
 // GetProduct belirli bir id'ye sahip ürünü listeleyen fonksiyon GET
 // Param: id
-func GetProduct(c *fiber.Ctx) error {
-	id := c.Params("id")
-	product, err := models.GetProductByID(id)
+func GetProductByID(c *fiber.Ctx) error {
+	productID:= c.Params("product_id")
+	var product models.Product
+     config.DB.Find(&product , productID)
 
-	if err != nil {
+	 if product.ID == 0 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"error": "Ürün bulunamadı.",
+			"status" : "error" , 
+			"message" : "product not found" ,
 		})
-	}
 
-	return c.Status(fiber.StatusOK).JSON(product)
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+			"status" :"succes" , 
+			"data" : product ,
+		})
+
+	 }
+	
+
+	
 }
 
 // CreateProduct yeni ürün oluşturmak için POST isteği oluşturur
