@@ -101,11 +101,11 @@ func UpdateProduct(c *fiber.Ctx) error {
 		product.Description = reqProduct.Description
 	}
 
-	if reqProduct.Price > 0 && reqProduct.Price !=0 {
+	if reqProduct.Price <= 0 {
 		product.Price = reqProduct.Price
 	}
 
-	if reqProduct.Stock > 0 && reqProduct.Stock !=0 {
+	if reqProduct.Stock <= 0 {
 		product.Stock = reqProduct.Stock
 	}
 
@@ -123,15 +123,7 @@ func UpdateProduct(c *fiber.Ctx) error {
 
 // DeleteProduct mevcut ürünü siler. DELETE isteklerini işler.
 func DeleteProduct(c *fiber.Ctx) error {
-	id := c.Params("id")
+	productID := c.Params("product_id")
 
-	if err := models.DeleteProduct(id); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "Ürün başarıyla silindi",
-	})
 }
