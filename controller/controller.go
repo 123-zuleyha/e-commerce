@@ -93,7 +93,7 @@ func UpdateProduct(c *fiber.Ctx) error {
 			"error": err.Error(),
 		})
 	
-	if reqProduct.Name !="" {
+	if reqProduct.Name != "" {
 			product.Name = reqProduct.Name
 		}
 
@@ -124,6 +124,16 @@ func UpdateProduct(c *fiber.Ctx) error {
 // DeleteProduct mevcut ürünü siler. DELETE isteklerini işler.
 func DeleteProduct(c *fiber.Ctx) error {
 	productID := c.Params("product_id")
-
+	var product models.Product
+	 
+	if product.productID == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error" : " Product notfound "
+		})
+	}
+	config.DB.Delete(&product)
+   return c.Status(fiber.StatusOK).JSON(fiber.Map{
+	"message" : "Succesfly deleted product" ,
+   })
 
 }
