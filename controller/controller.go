@@ -31,10 +31,10 @@ func GetProductByID(c *fiber.Ctx) error {
 
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{
 			"status": "succes",
-			"data":   product,
+			"data":   product ,
 		})
 
-	}}
+	}
 
 
 
@@ -51,26 +51,26 @@ func CreateProduct(c *fiber.Ctx) error {
 			"status" : "error",
 			"message" : "name  is empty" ,
 		})
-		if product.Description ==""  { 
+	if product.Description == ""  { 
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"status" : "error",
+				"status" : "error" ,
 				"message" : "description is empty" ,
-			})
-		}
+			}) 
+		}}
 
-			if product.Price ==0  { 
+	if product.Price ==0  { 
 				return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 					"status" : "error",
 					"message" : "price is empty or zero" ,
 				})}
-				if product.Stock ==0  { 
+	if product.Stock ==0  { 
 					return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 						"status" : "error",
 						"message" : "stock is empty or zero" ,
 					})}
 	
 
-           config.DB.Create(&product) //veritananına ekleme yapıyoruz
+     config.DB.Create(&product) //veritananına ekleme yapıyoruz
 		return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 			"status" :"success" , 
 			"data" : product ,
@@ -85,22 +85,40 @@ func CreateProduct(c *fiber.Ctx) error {
 
 // UpdateProduct mevcut ürünü güncellemek için kullanılır. PUT isteklerini işler.
 func UpdateProduct(c *fiber.Ctx) error {
-	id := c.Params("id")
+	productID := c.Params("product_id")
 	var product models.Product
 
 	if err := c.BodyParser(&product); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": err.Error(),
 		})
+	
+	if reqProduct.Name !="" {
+			product.Name = reqProduct.Name
+		}
+
+	if reqProduct.Description !="" {
+		product.Description = reqProduct.Description
 	}
 
-	if err := models.UpdateProduct(id, &product); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": err.Error(),
-		})
+	if reqProduct.Price > 0 && reqProduct.Price !=0 {
+		product.Price = reqProduct.Price
 	}
 
-	return c.Status(fiber.StatusOK).JSON(product)
+	if reqProduct.Stock > 0 && reqProduct.Stock !=0 {
+		product.Stock = reqProduct.Stock
+	}
+
+    config.DB.Save(&product)
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status" : "success" , 
+		"data" : product ,
+	})
+	}
+      
+	
+
+	
 }
 
 // DeleteProduct mevcut ürünü siler. DELETE isteklerini işler.
