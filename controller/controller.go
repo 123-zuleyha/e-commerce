@@ -101,11 +101,11 @@ func UpdateProduct(c *fiber.Ctx) error {
 		product.Description = reqProduct.Description
 	}
 
-	if reqProduct.Price <= 0 {
+	if reqProduct.Price != 0 {
 		product.Price = reqProduct.Price
 	}
 
-	if reqProduct.Stock <= 0 {
+	if reqProduct.Stock != 0 {
 		product.Stock = reqProduct.Stock
 	}
 
