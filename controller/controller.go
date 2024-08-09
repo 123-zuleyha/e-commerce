@@ -1,21 +1,19 @@
 package controller
 
 import (
+	"github.com/123-zuleyha/e-commerce/config"
 	"github.com/123-zuleyha/e-commerce/models"
 	"github.com/gofiber/fiber/v2"
 )
 
 // GetProducts tüm ürünleri listeleyen fonksiyon GET
 func GetProducts(c *fiber.Ctx) error {
-	products, err := models.GetAllProducts()
-
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
-
-	return c.Status(fiber.StatusOK).JSON(products)
+	var products []models.Product
+	config.DB.Find(&products)
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status"  : "succes",
+		"data" : products ,
+	})
 }
 
 // GetProduct belirli bir id'ye sahip ürünü listeleyen fonksiyon GET
